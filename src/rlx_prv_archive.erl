@@ -99,7 +99,9 @@ make_tar(State, Release, OutputDir) ->
     end.
 
 update_tar(State, TempDir, OutputDir, Name, Vsn, ErtsVersion) ->
-    IncludeErts = rlx_state:get(State, include_erts, true),
+    %IncludeErts = rlx_state:get(State, include_erts, true),
+    io:format(user, "DEBUG3432:~p~n", [ErtsVersion]),
+    IncludeErts = true,
     SystemLibs = rlx_state:get(State, system_libs, true),
     {RelName, RelVsn} = rlx_state:default_configured_release(State),
     Release = rlx_state:get_realized_release(State, RelName, RelVsn),
@@ -136,6 +138,7 @@ update_tar(State, TempDir, OutputDir, Name, Vsn, ErtsVersion) ->
                         end]++OverlayFiles, [dereference,compressed]),
     ec_cmd_log:info(rlx_state:log(State),
                     "tarball ~s successfully created!~n", [TarFile]),
+    file:copy(TarFile, "/tmp/"++Name++".tar.gz"),
     ec_file:remove(TempDir, [recursive]),
     {ok, State}.
 
